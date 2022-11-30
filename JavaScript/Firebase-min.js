@@ -1,26 +1,25 @@
-// Add this elements to <head>
-/*
+/* <==============> Copy this to <head> tag. <==============>
+
 <script src="/Scripts/Firebase.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-functions-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth-compat.js"></script> */
+<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth-compat.js"></script>
 
-// Database class definition.
+*/
+
 const firebaseConfig = {
-    apiKey: "AIzaSyAjJ2zxr5jomZySTXlSzqcgSm1vXSTIUlA",
-    authDomain: "quizizapp.firebaseapp.com",
-    databaseURL: "https://quizizapp-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "quizizapp",
-    storageBucket: "quizizapp.appspot.com",
-    messagingSenderId: "75300306655",
-    appId: "1:75300306655:web:79f4b3549e6434103d336a",
-    measurementId: "G-65Q6S37KF8"
+    apiKey: "AIzaSyAOadM71rJ8kz9a7B8lhTYqoBNP9b9-jxE",
+    authDomain: "fir-jstest-8a47a.firebaseapp.com",
+    projectId: "fir-jstest-8a47a",
+    storageBucket: "fir-jstest-8a47a.appspot.com",
+    messagingSenderId: "580695874556",
+    appId: "1:580695874556:web:6fa6bc4943f3b7bd54f079"
 };
+const lang = "pl";
 
 class Firestore {
-
     // Main constructor of new() statement.
     constructor() {
 
@@ -91,17 +90,11 @@ class Firestore {
         })
     }
 }
-
-// Database class definition.
-class Database {
-
-    // Main constructor of new() statement.
+class RTDatabase {
     constructor() {
-        // Initalize firebase features.
         firebase.initializeApp(firebaseConfig);
         this.db = firebase.database();
     }
-    // Set element to database.
     set(ref, data) {
         this.db.ref(ref).set(data);
     }
@@ -113,7 +106,6 @@ class Database {
         });
     }
     onChange(ref, type, callback = () => {}) {
-        // value, child_added, child_removed, child_changed, child_moved
         this.db.ref(ref).on(type, (e) => {
             callback({key: e.key, value: e.val()});
         });
@@ -132,7 +124,6 @@ class Database {
 
 class FilesStorage {
     constructor() {
-        // Initalize firebase features.
         firebase.initializeApp(firebaseConfig);
         this.db = firebase.storage();
     }
@@ -144,5 +135,160 @@ class FilesStorage {
             response();
         });
     }
+}
+class FirebaseBaseAuth
+{
+    constructor() {
+        firebase.initializeApp(firebaseConfig);
+        this.auth = firebase.auth();
+    }
+    signInAnonymously(res) {
+        this.auth.signInAnonymously().then(() => {
+            res();
+        });
+    }
+    register(email, password) {
+        this.auth.createUserWithEmailAndPassword(email, password).then((user) => {
+            var authed = user.user;
 
+        });
+    }
+    login(email, password, ref = () => {}) {
+        this.auth.signInWithEmailAndPassword(email, password).then((user) => {
+            ref(user.user);
+        }).catch((error) => {
+            ref(error.code);
+        });
+    }
+    onAuth(res = () => {}) {
+        this.auth.onAuthStateChanged((user) => {
+            if (user) {
+                res(user);
+            } else {
+                res(null);
+            }
+        });
+    }
+    signOut(res = () => {}) {
+        this.auth.signOut().then(() => {
+            res();
+        });
+    }
+    getCurrentUser(res = () => {}) {
+        res(this.auth.currentUser);
+    }
+    getUserInfo(res = () => {}) {
+        const user = this.auth.currentUser;
+        if (user !== null) {
+
+        }
+    }
+    updateProfile(obj, res = () => {}) {
+        const user = this.auth.currentUser;
+        user.updateProfile(obj).then(() => {res()});
+    }
+    updateEmail(email, res = () => {}) {
+        const user = this.auth.currentUser;
+        user.updateEmail(email).then(() => {
+            res();
+        });
+    }
+    setPassword(newPassword, res = () => {}) {
+        const user = this.auth.currentUser;
+        user.updatePassword(newPassword).then(() => {
+            res();
+        });
+    }
+    deleteUser(res = () => {}) {
+        const user = this.auth.currentUser;
+        user.delete().then(() => {
+            res();
+        });
+    }
+    reauth(res = () => {}) {
+        const user = this.auth.currentUser;
+        const crendical = promptForCredentials();
+        user.reauthenticateWithCredential
+    }
+    isLogged(res = () => {}) {
+        this.onAuth(() => {
+            if (this.auth.currentUser) {
+                res(true);
+            } else {
+                res(false);
+            }
+        });
+    }
+}
+class FirebaseGoogleAuth {
+    constructor(scopes, customParameters) {
+        firebase.initializeApp(firebaseConfig);
+        this.auth = firebase.auth();
+        this.provider = new firebase.auth.GoogleAuthProvider();
+        if (scopes !== undefined) {
+            for(var x in scopes) {
+                this.provider.addScope('https://www.googleapis.com/auth/' + scopes[x]);
+            }
+        }
+        this.auth.useDeviceLanguage();
+        if (customParameters !== undefined) {
+            this.provider.setCustomParameters(customParameters);
+        }
+    }
+    signInWithPopup(res = () => {}) {
+        this.auth.signInWithPopup(this.provider).then((e) => {
+            var credential = e.credential;
+            var token = e.accessToken;
+            var user = e.user;
+            res({crendical: credential, token: token, user: user});
+        }).catch((e) => {res(NaN);});
+    }
+}
+class FirebaseFacebookAuth {
+    constructor(scopes, customParameters = {'display': 'popup'}) {
+        firebase.initializeApp(firebaseConfig);
+        this.auth = firebase.auth();
+        this.provider = new firebase.auth.FacebookAuthProvider();
+        if (scopes !== undefined) {
+            for(var x in scopes) {
+                this.provider.addScope(scopes[x]);
+            }
+        }
+        this.auth.useDeviceLanguage();
+        if (customParameters !== undefined) {
+            this.provider.setCustomParameters(customParameters);
+        }
+    }
+    signInWithPopup(res = () => {}) {
+        this.auth.signInWithPopup(this.provider).then((e) => {
+            var credential = e.credential;
+            var token = e.accessToken;
+            var user = e.user;
+            res({crendical: credential, token: token, user: user});
+        }).catch((e) => {res(NaN);});
+    }
+}
+class FirebaseTwitterAuth {
+    constructor(scopes, customParameters = {'lang': lang}) {
+        firebase.initializeApp(firebaseConfig);
+        this.auth = firebase.auth();
+        this.provider = new firebase.auth.FacebookAuthProvider();
+        if (scopes !== undefined) {
+            for(var x in scopes) {
+                this.provider.addScope(scopes[x]);
+            }
+        }
+        if (customParameters !== undefined) {
+            this.provider.setCustomParameters(customParameters);
+        }
+    }
+    signInWithPopup(res = () => {}) {
+        this.auth.signInWithPopup(this.provider).then((e) => {
+            var credential = e.credential;
+            var token = e.accessToken;
+            var secret = e.secret;
+            var user = e.user;
+            res({crendical: credential, token: token, user: user, secret: secret});
+        }).catch((e) => {res(NaN);});
+    }
 }

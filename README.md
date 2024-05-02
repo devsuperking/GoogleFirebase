@@ -1,6 +1,4 @@
-![Zdjęcie](https://microplay.ml/assets/img/Firebase_logo.png)
 # Google Firebase SDK
-> Autor: SuperKing
 
 ## Co to jest Google Firebase SDK?
 Google Firebase SDK jest to biblioteka JavaScript stworzona do łatwiejszej implementacji Google Firebase SDK do twojego projektu JavaScript poprzez CDN. Pisz kod, nawet 10 razy szybciej niż poprzez orginalną bibliotekę!
@@ -19,7 +17,6 @@ Aby zaimportować bibliotekę, wystarczy że do sekcji `<head>` wrzucisz następ
 ```
 ## Inicjalizacja bazy danych
 W dowolnym skrypcie na twojej stronie, ustanów konfigurację. Znajdziesz ją w [konsoli deweloperskiej Firebase.](https://console.firebase.google.com/)
-![Zdjęcie](https://microplay.ml/assets/img/configScreen.png)
 
 ## Typy zmiany: onChange()
 `child_added` - Pobieraj listy elementów lub słuchaj dodatków do listy elementów. To zdarzenie jest wyzwalane raz dla każdego istniejącego elementu podrzędnego, a następnie ponownie za każdym razem, gdy do określonej ścieżki zostanie dodany nowy element podrzędny. Odbiornik otrzymuje migawkę zawierającą dane nowego dziecka.
